@@ -5,6 +5,7 @@ import BarChart from '../components/Chart/Chart';
 import DropDown from '../components/DropDown/DropDown';
 import Table from "../components/Table/Table";
 import Button from '../components/Button/Button';
+import CSVButton from '../components/CSV/CSV';
 
 
 const dataColumnTitles = ["name", "min estimated diameter", "max estimated diameter",{ role: "planet" }];
@@ -92,7 +93,8 @@ class MainPage extends Component {
             {selectedOption && <h1>{selectedOption}</h1>}
             {!selectedData.length && <h1>Data display chart</h1>}
             
-            {this.state.toggleButton? <BarChart chartData={selectedData}/>:<Table chartData={selectedTableData} />}
+            {this.state.toggleButton? <BarChart chartData={selectedData}/>:<Table chartData={selectedTableData}/>}
+            <CSVButton data={selectedTableData}/>
         </div>
     )
   }
