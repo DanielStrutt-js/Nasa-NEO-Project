@@ -3,8 +3,12 @@ import React, { Component } from "react";
 import axios from "axios";
 import BarChart from '../components/Chart/Chart';
 import DropDown from '../components/DropDown/DropDown';
+import Table from "../components/Table/Table";
+import Button from '../components/Button/Button';
+
 
 const dataColumnTitles = ["name", "min estimated diameter", "max estimated diameter",{ role: "planet" }];
+const tableColumnTitles = ["NEO Name", "Min estimated diameter", "Max estimated diameter","Orbuted planet" ];
 
 class MainPage extends Component {
     state = {
@@ -16,6 +20,8 @@ class MainPage extends Component {
             { value: "no planet", label: "no orbited planet" }],
         selectedOption: 'Show All Near Earth Objects',
         selectedData: [],
+        toggleButton: true,
+        selectedTableData: [],
     };
 
     componentDidMount() {
@@ -44,14 +50,15 @@ class MainPage extends Component {
             );
             this.setState(
                 {data: [...restructuredData],
-                selectedData: [dataColumnTitles, ...restructuredData]
+                selectedData: [dataColumnTitles, ...restructuredData],
+                selectedTableData: [tableColumnTitles, ...restructuredData]
             });
        
         }).catch(function(error) {
             console.log(error);
           });
     };
-    
+
 //gets current selected planet from onChangeHandler then filters of data looking for arrays
 //that contain the current selected planet, then return all arrays containing that planet
 //if it finds no arrays with selected planet return data array.
@@ -65,18 +72,28 @@ class MainPage extends Component {
         const planetInformation = this.getPlanetInformation(selected.label);
         this.setState({
           selectedOption: selected.label,
-          selectedData: [dataColumnTitles, ...planetInformation]
+          selectedData: [dataColumnTitles, ...planetInformation],
+          selectedTableData: [tableColumnTitles, ...planetInformation]
         });
       };
 
+      toggleButtonHandler = () => {
+        this.state.toggleButton?this.setState({toggleButton: false}): this.setState({toggleButton: true})
+      };
+
   render(){
-    const { selectedData, dropDownOptions, selectedOption } = this.state;
-    
+    const { selectedData, dropDownOptions, selectedOption, toggleButton, selectedTableData} = this.state;
+    console.log(selectedTableData)
+    console.log(selectedData)
     return (
-        <React.Fragment>
+        <div className="App">
             <DropDown options={dropDownOptions} onChange={this.onChangeHandler} default={selectedOption} />
-            <BarChart chartData={selectedData}/>
-        </React.Fragment>
+            <Button clicked={this.toggleButtonHandler} value={toggleButton}/>
+            {selectedOption && <h1>{selectedOption}</h1>}
+            {!selectedData.length && <h1>Data display chart</h1>}
+            
+            {this.state.toggleButton? <BarChart chartData={selectedData}/>:<Table chartData={selectedTableData} />}
+        </div>
     )
   }
 };
